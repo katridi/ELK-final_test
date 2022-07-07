@@ -16,3 +16,6 @@ You could use any way to index data:
 - fdind movies which userX is put rating of 5).
 
 ### NB: Try implement it using several approaches for working with hierarchical data and explain which one is the best fit here
+
+# The implementation
+
