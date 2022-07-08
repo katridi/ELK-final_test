@@ -13,7 +13,7 @@ You could use any way to index data:
 - fuzzy
 - filter/sort by average rating
 - finding top-10 tags for the movie
-- fdind movies which userX is put rating of 5).
+- find movies which userX is put rating of 5).
 
 ### NB: Try implement it using several approaches for working with hierarchical data and explain which one is the best fit here
 

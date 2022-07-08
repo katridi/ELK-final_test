@@ -9,6 +9,7 @@ class AppContext:
 
 
 def create_es_client() -> Elasticsearch:
+    # configure params
     return Elasticsearch(
         hosts=["https://localhost:9200"],
         http_auth=("admin", "admin"),

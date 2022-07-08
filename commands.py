@@ -1,6 +1,5 @@
 from typing import Dict
 
 
-def match_term(term, value: str) -> Dict:
-    term = "customer_first_name.keyword"
+def match_term(term: str, value: str) -> Dict:
     return {"query": {"term": {term: {"value": value}}}}

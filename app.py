@@ -1,4 +1,5 @@
 import json
+import sys
 from typing import Dict
 
 import click
@@ -17,6 +18,15 @@ def match(ctx, term, value):
     print(json.dumps(res, indent=4, ensure_ascii=False))
 
 
+@click.command()
+@click.argument("raw_data", type=click.File('r'), default=sys.stdin)
+@click.pass_context
+def raw(ctx, raw_data):
+    query: Dict = json.loads(raw_data.read())
+    res = ctx.obj.es.search(index=ctx.obj.index, body=query)
+    print(json.dumps(res, indent=4, ensure_ascii=False))
+
+
 @click.group()
 @click.pass_context
 def cli(ctx):
@@ -25,6 +35,7 @@ def cli(ctx):
 
 if __name__ == "__main__":
     cli.add_command(match)
+    cli.add_command(raw)
     # make decorator to pass es
     app_context = create_app_context()
     cli(obj=app_context)
