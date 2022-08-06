@@ -1,4 +1,5 @@
-from operator import index
+from typing import Dict
+
 from elasticsearch import Elasticsearch
 
 
@@ -6,6 +7,17 @@ class AppContext:
     def __init__(self, es: Elasticsearch, index: str) -> None:
         self.es = es
         self.index = index
+        self._check_connection()
+
+
+    def search_in_index(self, body: Dict) -> Dict:
+        res = self.es.search(index=self.index, body=body)
+        # log res?
+        return res
+
+    def _check_connection(self):
+        if not self.es.ping():
+            raise ValueError(f"Connection failed to {self.es}")
 
 
 def create_es_client() -> Elasticsearch:

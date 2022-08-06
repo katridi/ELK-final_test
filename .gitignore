@@ -2,3 +2,4 @@
 data/**
 .vscode/
 notes
+.ipynb_checkpoints/
