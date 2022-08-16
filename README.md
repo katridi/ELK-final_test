@@ -19,3 +19,20 @@ You could use any way to index data:
 
 # The implementation
 
+[Tips for speed up ingestion](https://www.elastic.co/guide/en/elasticsearch/reference/current/tune-for-indexing-speed.html)
+
+DELETE user_ratings
+
+PUT user_ratings
+
+PUT user_ratings/_settings
+{
+  "index" : {
+    "refresh_interval" : "-1"
+  }
+}
+
+GET user_ratings/_settings
+
+
+
