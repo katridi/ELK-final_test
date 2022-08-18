@@ -3,7 +3,7 @@ from elasticsearch import Elasticsearch
 
 class AppContext:
     def __init__(self, es: Elasticsearch) -> None:
-        self.es = es
+        self.es: Elasticsearch = es
         self._check_connection()
  
     def _check_connection(self) -> None:

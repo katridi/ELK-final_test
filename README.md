@@ -36,3 +36,17 @@ GET user_ratings/_settings
 
 
 
+DELETE movies
+
+PUT movies
+
+PUT movies/_settings
+{
+  "index" : {
+    "refresh_interval" : "-1"
+  }
+}
+
+GET movies/_settings
+
+# TODO add IMDB_id url to output
