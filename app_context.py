@@ -5,7 +5,7 @@ class AppContext:
     def __init__(self, es: Elasticsearch) -> None:
         self.es: Elasticsearch = es
         self._check_connection()
- 
+
     def _check_connection(self) -> None:
         if not self.es.ping():
             raise ValueError(f"Connection failed to {self.es}")
@@ -18,7 +18,7 @@ def create_es_client() -> Elasticsearch:
         http_auth=("admin", "admin"),
         verify_certs=False,
         use_ssl=True,
-        ssl_show_warn=False
+        ssl_show_warn=False,
     )
 
 

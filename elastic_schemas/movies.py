@@ -1,4 +1,9 @@
-from elasticsearch_dsl import Document, Integer, Keyword, Text, Float
+from __future__ import annotations
+
+from typing import List
+
+from elasticsearch import Elasticsearch
+from elasticsearch_dsl import Document, Float, Integer, Keyword, Text
 
 
 class Movies(Document):
@@ -10,7 +15,7 @@ class Movies(Document):
     tmdbId = Integer()
     tag = Keyword(multi=True)
     relevance = Float(multi=True)
-
+    
     class Index:
         name = 'movies'
         settings = {
@@ -18,10 +23,17 @@ class Movies(Document):
           "number_of_shards" : "1",
         }
 
+    @classmethod
+    def find_movie(cls, es: Elasticsearch, movie_id: int) -> List[Movies]:
+        movies_search = cls.search(using=es)
+        return movies_search.query('match', **{'movieId': movie_id}).execute().hits
+        
+
 
 if __name__ == '__main__':
-    from elasticsearch import Elasticsearch
     from typing import List
+
+    from elasticsearch import Elasticsearch
 
     es = Elasticsearch(
         hosts=["https://localhost:9200"],
@@ -30,14 +42,3 @@ if __name__ == '__main__':
         use_ssl=True,
         ssl_show_warn=False
     )
-    movie_id = 904
-
-    movies_search = Movies.search(using=es)
-    movies: List[Movies] = movies_search.query('match', **{'movieId': movie_id}).execute().hits
-
-    for movie in movies:
-        if not movie.tag:
-            print(F'Movie id="{movie.movieId}" "{movie.title}" there are no tags:')
-            continue    
-        print(F'Movie id="{movie.movieId}" "{movie.title}" top10 tags are:')
-        [print(f'{x}', sep=' | ', end='') for x in movie.tag]
