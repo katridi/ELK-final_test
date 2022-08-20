@@ -1,9 +1,17 @@
 from __future__ import annotations
 
-from typing import List
+from dataclasses import dataclass
+from typing import Dict, List, Optional
 
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Document, Float, Integer, Keyword, Text
+
+
+@dataclass
+class AvgRating:
+    movie_id: int
+    avg_rating: float
+    votes: int
 
 
 class UserRatings(Document):
@@ -33,3 +41,33 @@ class UserRatings(Document):
             user_ratings.filter("range", rating={"gte": cls._top_range}).execute().hits
         )
         return top_movies
+
+    @classmethod
+    def top_rated_movies(
+        cls, es: Elasticsearch, genre: Optional[str], votes: Optional[int]
+    ) -> List[AvgRating]:
+        default_votes = 10
+        votes = votes or default_votes
+
+        s = cls.search(using=es)
+        if genre is not None:
+            s = s.filter("term", **{"genres.keyword": genre})
+        bucket_name = "top_rated"
+        s.aggs.bucket(
+            "top_rated",
+            "terms",
+            field="movieId",
+            order={"avg_rating": "desc"},
+            min_doc_count=f"{votes}",
+            size="10000",
+        ).metric("avg_rating", "avg", field="rating")
+
+        top_10: List[Dict] = s.execute().aggregations[bucket_name]["buckets"][:10]
+        return [
+            AvgRating(
+                movie_id=bucket["key"],
+                avg_rating=bucket["avg_rating"]["value"],
+                votes=bucket["doc_count"],
+            )
+            for bucket in top_10
+        ]

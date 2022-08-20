@@ -15,30 +15,15 @@ class Movies(Document):
     tmdbId = Integer()
     tag = Keyword(multi=True)
     relevance = Float(multi=True)
-    
+
     class Index:
-        name = 'movies'
+        name = "movies"
         settings = {
-          "refresh_interval" : "1",
-          "number_of_shards" : "1",
+            "refresh_interval": "1",
+            "number_of_shards": "1",
         }
 
     @classmethod
-    def find_movie(cls, es: Elasticsearch, movie_id: int) -> List[Movies]:
+    def find_movies(cls, es: Elasticsearch, movie_id_list: List[int]) -> List[Movies]:
         movies_search = cls.search(using=es)
-        return movies_search.query('match', **{'movieId': movie_id}).execute().hits
-        
-
-
-if __name__ == '__main__':
-    from typing import List
-
-    from elasticsearch import Elasticsearch
-
-    es = Elasticsearch(
-        hosts=["https://localhost:9200"],
-        http_auth=("admin", "admin"),
-        verify_certs=False,
-        use_ssl=True,
-        ssl_show_warn=False
-    )
+        return movies_search.filter("terms", movieId=movie_id_list).execute().hits

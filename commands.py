@@ -1,8 +1,9 @@
-from typing import List
+from typing import List, Optional
 
 from elasticsearch import Elasticsearch
-from elastic_schemas.user_ratings import UserRatings
+
 from elastic_schemas.movies import Movies
+from elastic_schemas.user_ratings import AvgRating, UserRatings
 
 
 def find_user_top(es: Elasticsearch, user_id: int) -> None:
@@ -16,7 +17,7 @@ def find_user_top(es: Elasticsearch, user_id: int) -> None:
 
 
 def find_top_10_tags_for_movie_id(es: Elasticsearch, movie_id: int) -> None:
-    movies: List[Movies] = Movies.find_movie(es=es, movie_id=movie_id)
+    movies: List[Movies] = Movies.find_movies(es=es, movie_id_list=[movie_id])
 
     if not movies:
         print(f'There is no movie with id="{movie_id}"')
@@ -29,3 +30,15 @@ def find_top_10_tags_for_movie_id(es: Elasticsearch, movie_id: int) -> None:
         return
     print(f'Movie id="{movie.movieId}" "{movie.title}" top10 tags are:')
     [print(f"| {x} |") for x in movie.tag]
+
+
+def find_top_10_rated_movies(es: Elasticsearch, genre: Optional[str], votes: Optional[int]) -> None:
+    avg_rating_list: List[AvgRating] = UserRatings.top_rated_movies(
+        es=es, genre=genre, votes=votes
+    )
+    # TO preserve the order
+    for item in avg_rating_list:
+        movie = Movies.find_movies(es=es, movie_id_list=[item.movie_id])[0]
+        print(
+            f"| {movie.title} | {movie.year} | avg_rating: {item.avg_rating} | votes: {item.votes} | imdb: {movie.imdbId}"
+        )
