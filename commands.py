@@ -4,6 +4,7 @@ from elasticsearch import Elasticsearch
 
 from elastic_schemas.movies import Movies
 from elastic_schemas.user_ratings import AvgRating, UserRatings
+from rich_print.tables import TopMoviesConsoleTable
 
 
 def find_user_top(es: Elasticsearch, user_id: int) -> None:
@@ -36,9 +37,10 @@ def find_top_10_rated_movies(es: Elasticsearch, genre: Optional[str], votes: Opt
     avg_rating_list: List[AvgRating] = UserRatings.top_rated_movies(
         es=es, genre=genre, votes=votes
     )
+    table = TopMoviesConsoleTable()
     # TO preserve the order
-    for item in avg_rating_list:
-        movie = Movies.find_movies(es=es, movie_id_list=[item.movie_id])[0]
-        print(
-            f"| {movie.title} | {movie.year} | avg_rating: {item.avg_rating} | votes: {item.votes} | imdb: {movie.imdbId}"
-        )
+    for index, item in enumerate(avg_rating_list, 1):
+        movie: List[Movies] = Movies.find_movies(es=es, movie_id_list=[item.movie_id])[0]
+        row = [index, movie.title, movie.year, round(item.avg_rating, 2), movie.genres[:3], item.votes, movie.imdbId]
+        table.populate_row(row=row)
+    table.print()

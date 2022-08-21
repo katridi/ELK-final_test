@@ -8,6 +8,7 @@ RUN pip3 install -r requirements.txt
 
 COPY *.py /app/
 COPY ./elastic_schemas /app/elastic_schemas
+COPY ./rich_print /app/rich_print
 
 
 USER root
