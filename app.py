@@ -7,6 +7,7 @@ from commands import (
     find_top_10_rated_movies,
     find_top_10_tags_for_movie_id,
     find_user_top,
+    fuzzy_search_movies
 )
 
 
@@ -38,6 +39,23 @@ def top_movies(ctx, genre: Optional[str], votes: Optional[int]) -> None:
     find_top_10_rated_movies(es=app_ctx.es, genre=genre, votes=votes)
 
 
+@click.command()
+@click.pass_context
+@click.argument("title", type=str)
+@click.option("--fuzziness", type=int, help="maximum edit distance allowed for matching")
+@click.option("--prefix_length", type=int, help="number of beginning characters left unchanged when creating expansions")
+@click.option("--max_expansions", type=int, help="maximum number of variations created")
+def fuzzy(ctx, title: str, fuzziness: Optional[int], prefix_length: Optional[int], max_expansions: Optional[int]) -> None:
+    """Fuzzy search movie titles"""
+    app_ctx: AppContext = ctx.obj
+    fuzzy_search_movies(
+        es=app_ctx.es, title=title, fuzziness=fuzziness,
+        prefix_length=prefix_length, max_expansions=max_expansions
+    )
+
+
+
+
 @click.group()
 @click.pass_context
 def cli(ctx):
@@ -45,7 +63,7 @@ def cli(ctx):
 
 
 if __name__ == "__main__":
-    commands = [user_top, movie_tags, top_movies]
+    commands = [user_top, movie_tags, top_movies, fuzzy]
     for command in commands:
         cli.add_command(command)
     app_context = create_app_context()

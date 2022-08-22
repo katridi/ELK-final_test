@@ -31,3 +31,16 @@ class TopMoviesConsoleTable(ConsoleTable):
         self.add_column("Genres", style="cyan", no_wrap=True)
         self.add_column("Votes", style="magenta", no_wrap=True)
         self.add_column("ImdbID", style="cyan", no_wrap=True)
+
+
+class MovieTagsTable(ConsoleTable):
+    def _set_columns(self) -> None:
+        self.add_column("Tag📌", style="cyan", no_wrap=True)
+        self.add_column("Relevance🏆", style="magenta", no_wrap=True)
+
+
+class MovieTable(ConsoleTable):
+    def _set_columns(self) -> None:
+        self.add_column("Title 📽️", style="white", no_wrap=True)
+        self.add_column("Year ⌛", style="cyan", no_wrap=True)
+        self.add_column("Genres", style="yellow", no_wrap=True)

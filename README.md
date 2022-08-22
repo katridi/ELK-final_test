@@ -49,8 +49,7 @@ PUT movies/_settings
 
 GET movies/_settings
 
-# TODO add IMDB_id url to output
-
+# TODO add IMDB_id to user index
 
 # Build docker image
 
@@ -67,3 +66,7 @@ docker run --network=host -it movies_searcher
 # Usage within container
 
 ## For simplicity `movie` alias is used to run the app in container
+
+
+
+python3 app.py fuzzy "Story" --fuzziness 100 --prefix_length 100 --max_expansions 100
