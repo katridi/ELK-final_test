@@ -33,7 +33,8 @@ class Movies(Document):
     @classmethod
     def fuzzy_title(
         cls, es: Elasticsearch, title: str, fuzziness: Optional[int] = None,
-        prefix_length: Optional[int] = None, max_expansions: Optional[int] = None) -> List[Movies]:
+        prefix_length: Optional[int] = None, max_expansions: Optional[int] = None
+    ) -> List[Movies]:
         movie_search = cls.search(using=es)
         return movie_search.query (Q({"fuzzy": {
             "title": {
@@ -45,6 +46,11 @@ class Movies(Document):
         }})).execute().hits
 
 
+    @classmethod
+    def match_title(cls, es: Elasticsearch, title: str) -> List[Movies]:
+        movie_search = cls.search(using=es)
+        return movie_search.query("match", title=title).execute().hits
+
 
 if __name__ == "__main__":
     es =  Elasticsearch(
@@ -55,11 +61,7 @@ if __name__ == "__main__":
         ssl_show_warn=False,
     )
 
-    movie = "Godfather"
-    fuzzy = 50
-    prefix_length = 100
-    max_expansions = 100
-    result = Movies().fuzzy_title(es=es, title=movie, fuzziness=fuzzy)
+    movie = "Toy story"
+    result = Movies().more_like_title(es=es, title=movie)
     for m in result:
         print(m.title)
-                #,

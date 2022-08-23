@@ -7,7 +7,8 @@ from commands import (
     find_top_10_rated_movies,
     find_top_10_tags_for_movie_id,
     find_user_top,
-    fuzzy_search_movies
+    fuzzy_search_movies,
+    match_movie_title,
 )
 
 
@@ -45,15 +46,21 @@ def top_movies(ctx, genre: Optional[str], votes: Optional[int]) -> None:
 @click.option("--fuzziness", type=int, help="maximum edit distance allowed for matching")
 @click.option("--prefix_length", type=int, help="number of beginning characters left unchanged when creating expansions")
 @click.option("--max_expansions", type=int, help="maximum number of variations created")
-def fuzzy(ctx, title: str, fuzziness: Optional[int], prefix_length: Optional[int], max_expansions: Optional[int]) -> None:
+def fuzzy_title(ctx, title: str, fuzziness: Optional[int], prefix_length: Optional[int], max_expansions: Optional[int]) -> None:
     """Fuzzy search movie titles"""
     app_ctx: AppContext = ctx.obj
     fuzzy_search_movies(
-        es=app_ctx.es, title=title, fuzziness=fuzziness,
-        prefix_length=prefix_length, max_expansions=max_expansions
+        es=app_ctx.es, title=title, fuzziness=fuzziness, prefix_length=prefix_length, max_expansions=max_expansions
     )
 
 
+@click.command()
+@click.pass_context
+@click.argument("title", type=str)
+def match_title(ctx, title: str) -> None:
+    """Search movie by the title"""
+    app_ctx: AppContext = ctx.obj
+    match_movie_title(es=app_ctx.es, title=title)
 
 
 @click.group()
@@ -63,7 +70,7 @@ def cli(ctx):
 
 
 if __name__ == "__main__":
-    commands = [user_top, movie_tags, top_movies, fuzzy]
+    commands = [user_top, movie_tags, top_movies, fuzzy_title, match_title]
     for command in commands:
         cli.add_command(command)
     app_context = create_app_context()

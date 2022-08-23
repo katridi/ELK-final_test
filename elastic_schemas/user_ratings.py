@@ -37,15 +37,11 @@ class UserRatings(Document):
     def user_top_movies(cls, es: Elasticsearch, user_id: int) -> List[UserRatings]:
         user_ratings_search = cls.search(using=es)
         user_ratings = user_ratings_search.query("match", **{"userId": user_id})
-        top_movies: List[UserRatings] = (
-            user_ratings.filter("range", rating={"gte": cls._top_range}).execute().hits
-        )
+        top_movies: List[UserRatings] = user_ratings.filter("range", rating={"gte": cls._top_range}).execute().hits
         return top_movies
 
     @classmethod
-    def top_rated_movies(
-        cls, es: Elasticsearch, genre: Optional[str], votes: Optional[int]
-    ) -> List[AvgRating]:
+    def top_rated_movies(cls, es: Elasticsearch, genre: Optional[str], votes: Optional[int]) -> List[AvgRating]:
         default_votes = 10
         votes = votes or default_votes
 

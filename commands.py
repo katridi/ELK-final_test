@@ -40,9 +40,7 @@ def find_top_10_tags_for_movie_id(es: Elasticsearch, movie_id: int) -> None:
 
 
 def find_top_10_rated_movies(es: Elasticsearch, genre: Optional[str], votes: Optional[int]) -> None:
-    avg_rating_list: List[AvgRating] = UserRatings.top_rated_movies(
-        es=es, genre=genre, votes=votes
-    )
+    avg_rating_list: List[AvgRating] = UserRatings.top_rated_movies(es=es, genre=genre, votes=votes)
     table = TopMoviesConsoleTable()
     # TO preserve the order
     for index, item in enumerate(avg_rating_list, 1):
@@ -53,15 +51,28 @@ def find_top_10_rated_movies(es: Elasticsearch, genre: Optional[str], votes: Opt
 
 
 def fuzzy_search_movies(
-    es: Elasticsearch, title: str, fuzziness: Optional[int] = None, prefix_length: Optional[int] = None,
-    max_expansions: Optional[int] = None
+    es: Elasticsearch,
+    title: str,
+    fuzziness: Optional[int] = None,
+    prefix_length: Optional[int] = None,
+    max_expansions: Optional[int] = None,
 ) -> None:
     movies: List[Movies] = Movies.fuzzy_title(
-        es=es, title=title, fuzziness=fuzziness,prefix_length=prefix_length, max_expansions=max_expansions
+        es=es, title=title, fuzziness=fuzziness, prefix_length=prefix_length, max_expansions=max_expansions
     )
     if not movies:
-        print("There are no movies found, try adjust params")
+        print("There are no movies found, try to adjust params")
         return
+    table = MovieTable()
+    for movie in movies:
+        row = [movie.title, movie.year, movie.genres[:3]]
+        table.populate_row(row=row)
+    table.print()
+
+
+def match_movie_title(es: Elasticsearch, title: str) -> None:
+    movies: List[Movies] = Movies.match_title(es=es, title=title)
+    print("There are no movies found, try to adjust title")
     table = MovieTable()
     for movie in movies:
         row = [movie.title, movie.year, movie.genres[:3]]
