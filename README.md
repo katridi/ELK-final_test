@@ -68,5 +68,3 @@ docker run --network=host -it movies_searcher
 ## For simplicity `movie` alias is used to run the app in container
 
 
-
-python3 app.py fuzzy "Story" --fuzziness 100 --prefix_length 100 --max_expansions 100
