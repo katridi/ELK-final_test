@@ -1,11 +1,19 @@
+
 import re
+from typing import Dict
 
 import urllib3
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import parallel_bulk
+from elasticsearch_dsl import Index
 from pandas import DataFrame
 
 urllib3.disable_warnings()
+
+
+def set_index_settings(es: Elasticsearch, index_name: str, settings: Dict) -> None:
+    i = Index(name=index_name, using=es)
+    i.settings(**settings)
 
 
 def extract_year(string):

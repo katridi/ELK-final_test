@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-from tools import extract_year, replace_year, ingest_data, create_elastic_client
+from tools import extract_year, replace_year, ingest_data, create_elastic_client, set_index_settings
 
 # TOOD adjust path
 # TODO put settings in index refresh interval etc
@@ -16,8 +16,14 @@ user_tags = os.path.join(os.getcwd(),'data/tags.csv')
 user_ratings_index = 'user_ratings'
 movies_index = 'movies'
 
+freeze_refresh_interval =  {"refresh_interval" : "-1"}
+unfreeze_refresh_interval = {"refresh_interval" : "1s"}
+
 es_client = create_elastic_client()
 es_client.ping()
+
+set_index_settings(es=es_client, index_name=user_ratings_index, settings=freeze_refresh_interval)
+set_index_settings(es=es_client, index_name=movies_index, settings=freeze_refresh_interval)
 
 
 ratings = pd.read_csv(
@@ -39,7 +45,7 @@ movies_with_links = movies.merge(links, how='left', on='movieId')
 ratings_with_names = ratings.merge(movies, how='left', on='movieId')
 
 
-ingest_data(es=es_client, data=ratings_with_names, index_name=user_ratings_index)
+ingest_data(es=es_client, data=ratings_with_names[:20000], index_name=user_ratings_index)
 
 
 genome = pd.read_csv(genome_path, sep=',')
@@ -64,3 +70,6 @@ movies_with_links_and_tags['relevance'] = movies_with_links_and_tags['relevance'
 
 
 ingest_data(es=es_client, data=movies_with_links_and_tags, index_name=user_ratings_index)
+
+set_index_settings(es=es_client, index_name=user_ratings_index, settings=unfreeze_refresh_interval)
+set_index_settings(es=es_client, index_name=movies_index, settings=unfreeze_refresh_interval)
