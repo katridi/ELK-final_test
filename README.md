@@ -29,7 +29,9 @@ sudo docker build -t movies_ingestion -f ingestion/Dockerfile .
 
 ## Map data volume from here [movie content](https://files.grouplens.org/datasets/movielens/ml-25m-README.html) (movies.csv, ratings.csv, tags.csv) and run ingestion
 
-``` bash
+## NB: ETA 30-40 min
+
+``` bash 
 docker run --network=host -it  -v $("pwd")/data:/app/data movies_ingestion
 ```
 
