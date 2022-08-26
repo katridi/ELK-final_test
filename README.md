@@ -9,10 +9,10 @@ You could use any way to index data:
 
 ## - Write console application which search movies
 
-- match phrase
-- fuzzy
+- match phrase !
+- fuzzy !
 - filter/sort by average rating
-- finding top-10 tags for the movie
+- finding top-10 tags for the movie !
 - find movies which userX is put rating of 5).
 
 ### NB: Try implement it using several approaches for working with hierarchical data and explain which one is the best fit here
@@ -49,3 +49,83 @@ docker run --network=host -it movies_searcher
 
 ## For simplicity `movie` alias is used to run the app in container
 
+![image](./screenshots/movie-help.png)
+
+## - match phrase
+
+![image](./screenshots/movie-title-help.png)
+
+## Example
+
+``` bash
+movie match-title "Toy story"
+```
+
+## Output
+
+![image](./screenshots/match-title.png)
+
+## - fuzzy
+
+![image](./screenshots/fuzzy-title-help.png)
+
+## Example
+
+``` bash
+movie fuzzy-title "Golang"
+```
+
+## Output
+
+![image](./screenshots/fuzzy-title.png)
+
+
+
+## - filter/sort by average rating
+
+![image](./screenshots/top-movies-help.png)
+
+## Example
+
+``` bash
+movie top-movies --genre Adventure
+```
+
+## Output
+
+![image](./screenshots/top-movies.png)
+
+
+
+
+
+## - finding top-10 tags for the movie
+
+![image](./screenshots/top-tag-help.png)
+
+## Example
+
+``` bash
+movie movie-tags 100
+```
+
+## Output
+
+![image](./screenshots/movie-tags.png)
+
+
+
+
+## - find movies which userX is put rating of 5).
+
+![image](./screenshots/user-top-help.png)
+
+## Example
+
+``` bash
+movie user-top 1001
+```
+
+## Output
+
+![image](./screenshots/user-top.png)

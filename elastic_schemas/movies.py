@@ -1,5 +1,4 @@
 from __future__ import annotations
-from turtle import title
 
 from typing import List, Optional
 
@@ -50,18 +49,3 @@ class Movies(Document):
     def match_title(cls, es: Elasticsearch, title: str) -> List[Movies]:
         movie_search = cls.search(using=es)
         return movie_search.query("match", title=title).execute().hits
-
-
-if __name__ == "__main__":
-    es =  Elasticsearch(
-        hosts=["https://localhost:9200"],
-        http_auth=("admin", "admin"),
-        verify_certs=False,
-        use_ssl=True,
-        ssl_show_warn=False,
-    )
-
-    movie = "Toy story"
-    result = Movies().more_like_title(es=es, title=movie)
-    for m in result:
-        print(m.title)

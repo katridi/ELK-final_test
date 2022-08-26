@@ -47,7 +47,7 @@ def top_movies(ctx, genre: Optional[str], votes: Optional[int]) -> None:
 @click.option("--prefix_length", type=int, help="number of beginning characters left unchanged when creating expansions")
 @click.option("--max_expansions", type=int, help="maximum number of variations created")
 def fuzzy_title(ctx, title: str, fuzziness: Optional[int], prefix_length: Optional[int], max_expansions: Optional[int]) -> None:
-    """Fuzzy search movie titles"""
+    """Fuzzy search movie by the title"""
     app_ctx: AppContext = ctx.obj
     fuzzy_search_movies(
         es=app_ctx.es, title=title, fuzziness=fuzziness, prefix_length=prefix_length, max_expansions=max_expansions

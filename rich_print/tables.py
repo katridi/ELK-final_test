@@ -44,3 +44,4 @@ class MovieTable(ConsoleTable):
         self.add_column("Title 📽️", style="white", no_wrap=True)
         self.add_column("Year ⌛", style="cyan", no_wrap=True)
         self.add_column("Genres", style="yellow", no_wrap=True)
+        self.add_column("ImdbID🎓", style="green", no_wrap=True)

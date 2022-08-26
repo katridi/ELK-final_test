@@ -15,7 +15,7 @@ def find_user_top(es: Elasticsearch, user_id: int) -> None:
     print(f'\n5 stars movies for user with id="{user_id}" are: ')
     table = MovieTable()
     for user in top_movies:
-        row = [user.title, user.year, user.genres[:5]]
+        row = [user.title, user.year, user.genres[:3], user.imdbId]
         table.populate_row(row)
     table.print()
 
@@ -32,7 +32,7 @@ def find_top_10_tags_for_movie_id(es: Elasticsearch, movie_id: int) -> None:
     if not movie.tag:
         print(f'Movie id="{movie.movieId}" "{movie.title}" there are no tags:')
         return
-    print(f'Movie id="{movie.movieId}" "{movie.title}" top10 tags are:')
+    print(f'Movie id="{movie.movieId}" "{movie.title}" ImdbID="{movie.imdbId}" top10 tags are:')
     table = MovieTagsTable()
     for tag, relevance in zip(movie.tag, movie.relevance):
         table.populate_row(row=[tag, round(relevance, 2)])
@@ -65,16 +65,18 @@ def fuzzy_search_movies(
         return
     table = MovieTable()
     for movie in movies:
-        row = [movie.title, movie.year, movie.genres[:3]]
+        row = [movie.title, movie.year, movie.genres[:3], movie.imdbId]
         table.populate_row(row=row)
     table.print()
 
 
 def match_movie_title(es: Elasticsearch, title: str) -> None:
     movies: List[Movies] = Movies.match_title(es=es, title=title)
-    print("There are no movies found, try to adjust title")
+    if not movies:
+        print("There are no movies found, try to adjust title")
+        return
     table = MovieTable()
     for movie in movies:
-        row = [movie.title, movie.year, movie.genres[:3]]
+        row = [movie.title, movie.year, movie.genres[:3], movie.imdbId]
         table.populate_row(row=row)
     table.print()

@@ -18,6 +18,7 @@ class UserRatings(Document):
     user_id = Integer()
     movieId = Integer()
     rating = Float()
+    imdbId = Integer()
     title = Text()
     genres = Keyword()
     year = Integer()

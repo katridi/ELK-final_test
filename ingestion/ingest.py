@@ -45,7 +45,7 @@ movies_with_links = movies.merge(links, how="left", on="movieId")
 ratings_with_names = ratings.merge(movies_with_links, how="left", on="movieId")
 
 print("Ingest user ratings")
-ingest_data(es=es_client, data=ratings_with_names[:20000], index_name=user_ratings_index)
+ingest_data(es=es_client, data=ratings_with_names, index_name=user_ratings_index)
 
 
 print("Read data")
