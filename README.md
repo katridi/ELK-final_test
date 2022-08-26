@@ -9,11 +9,11 @@ You could use any way to index data:
 
 ## - Write console application which search movies
 
-- match phrase (https://elasticsearch-dsl.readthedocs.io/en/latest/search_dsl.html#more-like-this-query)
+- match phrase
 - fuzzy
-- filter/sort by average rating <b>(DONE)</b>
-- finding top-10 tags for the movie <b>(DONE)</b>
-- find movies which userX is put rating of 5). <b>(DONE)</b>
+- filter/sort by average rating
+- finding top-10 tags for the movie
+- find movies which userX is put rating of 5).
 
 ### NB: Try implement it using several approaches for working with hierarchical data and explain which one is the best fit here
 
@@ -21,35 +21,17 @@ You could use any way to index data:
 
 [Tips for speed up ingestion](https://www.elastic.co/guide/en/elasticsearch/reference/current/tune-for-indexing-speed.html)
 
-DELETE user_ratings
+## Build image for ingestion
 
-PUT user_ratings
+``` bash
+sudo docker build -t movies_ingestion -f ingestion/Dockerfile .
+```
 
-PUT user_ratings/_settings
-{
-  "index" : {
-    "refresh_interval" : "-1"
-  }
-}
+## Map data volume from here [movie content](https://files.grouplens.org/datasets/movielens/ml-25m-README.html) (movies.csv, ratings.csv, tags.csv) and run ingestion
 
-GET user_ratings/_settings
-
-
-
-DELETE movies
-
-PUT movies
-
-PUT movies/_settings
-{
-  "index" : {
-    "refresh_interval" : "-1"
-  }
-}
-
-GET movies/_settings
-
-# TODO add IMDB_id to user index
+``` bash
+docker run --network=host -it  -v $("pwd")/data:/app/data movies_ingestion
+```
 
 # Build docker image
 
@@ -66,5 +48,4 @@ docker run --network=host -it movies_searcher
 # Usage within container
 
 ## For simplicity `movie` alias is used to run the app in container
-
 

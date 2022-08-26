@@ -2,10 +2,12 @@ FROM python:3.8-slim-buster
 
 WORKDIR /app
 
-COPY ./requirements.txt requirements.txt
+COPY ./ingestion/requirements.txt requirements.txt
 
 RUN pip3 install -r requirements.txt
 
-COPY *.py /app/
+COPY ./ingestion/*.py /app/
+
+RUN mkdir /app/data
 
 CMD [ "python", "/app/ingest.py" ]
