@@ -9,10 +9,10 @@ You could use any way to index data:
 
 ## - Write console application which search movies
 
-- match phrase !
-- fuzzy !
+- match phrase 
+- fuzzy 
 - filter/sort by average rating
-- finding top-10 tags for the movie !
+- finding top-10 tags for the movie
 - find movies which userX is put rating of 5).
 
 ### NB: Try implement it using several approaches for working with hierarchical data and explain which one is the best fit here
@@ -96,9 +96,6 @@ movie top-movies --genre Adventure
 ![image](./screenshots/top-movies.png)
 
 
-
-
-
 ## - finding top-10 tags for the movie
 
 ![image](./screenshots/top-tag-help.png)
@@ -112,8 +109,6 @@ movie movie-tags 100
 ## Output
 
 ![image](./screenshots/movie-tags.png)
-
-
 
 
 ## - find movies which userX is put rating of 5).
